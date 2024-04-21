@@ -14,11 +14,13 @@ jobs:
     steps:
     - name: Check base branch
       if: github.event_name == 'pull_request'
-      run: |
-        if [[ "${{ github.event.pull_request.base.ref }}" != "dev" ]]; then
-          echo "Pull requests can only be merged from 'dev' to 'main'."
-          exit 1
-        fi
+      run: ||
+          echo "Base branch is ${{ github.base_ref }}"
+          echo "Head branch is ${{ github.head_ref }}"
+          if [[ "${{ github.base_ref }}" == "main" && "${{ github.head_ref }}" != "dev" ]]; then
+            echo "Pull requests can only be merged from 'dev' to 'main'."
+            exit 1
+          fi
 
     - name: Checkout
       uses: actions/checkout@v3
